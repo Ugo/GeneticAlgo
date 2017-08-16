@@ -3,14 +3,10 @@
 * Manages algorithms for evolving population
 */
 
-package genetics.salesman;
+package com.genetics.salesman;
 
-import genetics.intf.IGeneticAlgorithm;
-import genetics.intf.IPopulation;
-import genetics.salesman.impl.Population;
-import genetics.salesman.impl.Route;
 
-public class SalesmanGA  implements IGeneticAlgorithm<Route> { 
+public class SalesmanGA  implements GeneticAlgorithm<Route> {
 
 	/* GA parameters */
 	private static final double mutationRate = 0.02; 
@@ -19,13 +15,13 @@ public class SalesmanGA  implements IGeneticAlgorithm<Route> {
 
 	// Evolves a population over one generation
 	@Override
-	public IPopulation<Route> evolvePopulation(IPopulation<Route> pop) {
-		Population newPopulation = new Population(pop.populationSize(), false);
+	public Population<Route> evolve(Population<Route> pop) {
+		Itineraries newPopulation = new Itineraries(pop.populationSize());
 
 		// Keep our best individual if elitism is enabled
 		int elitismOffset = 0;
 		if (elitism) {
-			newPopulation.saveIndividual(0, pop.getFittestIndividual());
+			newPopulation.addIndividual(pop.getFittestIndividual());
 			elitismOffset = 1;
 		}
 
@@ -36,9 +32,9 @@ public class SalesmanGA  implements IGeneticAlgorithm<Route> {
 			Route parent1 = selectIndividual(pop);
 			Route parent2 = selectIndividual(pop);
 			// Crossover parents
-			Route child = crossover(parent1, parent2);
+			Route child = createOffspring(parent1, parent2);
 			// Add child to new population
-			newPopulation.saveIndividual(i, child);
+			newPopulation.addIndividual(child);
 		}
 
 		// Mutate the new population a bit to add some new genetic material
@@ -49,9 +45,9 @@ public class SalesmanGA  implements IGeneticAlgorithm<Route> {
 		return newPopulation;
 	}
 
-	// Applies crossover to a set of parents and creates offspring
+	// Applies createOffspring to a set of parents and creates offspring
 	@Override
-	public Route crossover(Route parent1, Route parent2) {
+	public Route createOffspring(Route parent1, Route parent2) {
 		// Create new child tour
 		Route child = new Route();
 
@@ -110,16 +106,16 @@ public class SalesmanGA  implements IGeneticAlgorithm<Route> {
 		}
 	}
 
-	// Selects candidate tour for crossover
+	// Selects candidate tour for createOffspring
 	@Override
-	public Route selectIndividual(IPopulation<Route> pop) {
+	public Route selectIndividual(Population<Route> pop) {
 		// Create a tournament population
-		Population tournament = new Population(tournamentSize, false);
+		Itineraries tournament = new Itineraries(tournamentSize);
 		// For each place in the tournament get a random candidate tour and
 		// add it
 		for (int iter = 0; iter < tournamentSize; iter++) {
 			int randomId = (int) (Math.random() * pop.populationSize());
-			tournament.saveIndividual(iter, pop.getIndividual(randomId));
+			tournament.addIndividual(pop.getIndividual(randomId));
 		}
 		// Get the fittest route
 		Route fittest = tournament.getFittestIndividual();

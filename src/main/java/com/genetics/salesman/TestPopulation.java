@@ -3,34 +3,30 @@
 * Create a tour and evolve a solution
 */
 
-package genetics.salesman;
-
-import genetics.intf.IPopulation;
-import genetics.salesman.impl.Population;
-import genetics.salesman.impl.Route;
+package com.genetics.salesman;
 
 public class TestPopulation {
 
-	public static int POPULATION_SIZE = 5000;
-	public static int NUMBER_GENERATION = 500;
+	private static int POPULATION_SIZE = 5000;
+	private static int NUMBER_GENERATION = 500;
 
 	public static void main(String[] args) {
 
 		// Create and add our cities
-		// TestRandom();
-		TestSquare();
+		TestRandom();
+		// TestSquare();
 
 		// Initialize population
-		IPopulation<Route> pop = new Population(POPULATION_SIZE, true);
+		Itineraries pop = new Itineraries(POPULATION_SIZE);
 		System.out.println("Initial distance: " + pop.getFittestIndividual().getDistance());
 		long startTime = System.currentTimeMillis();
 		pop.getFittestIndividual().displayRoute("Initial route");
 
 		// Evolve population for all generations
 		SalesmanGA ga = new SalesmanGA();
-		pop = ga.evolvePopulation(pop);
+		pop = ga.evolve(pop);
 		for (int i = 0; i < NUMBER_GENERATION; i++) {
-			pop = ga.evolvePopulation(pop);
+			pop = ga.evolve(pop);
 
 			if (i % 20 == 0) {
 				// LinesComponent.createFrame("Generation " + i,
