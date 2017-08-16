@@ -5,85 +5,81 @@ import com.genetics.salesman.ui.DisplayComponent;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Itinerary implements Individual {
 
     private ArrayList<City> cities = new ArrayList<>();
 
     // Cache
-    private double fitness = 0;
     private int distance = 0;
 
-    private int SIZE_DISPLAY_BOARD = 200;
+    private static final int SIZE_DISPLAY_BOARD = 200;
+    private final Random RANDOM = new Random();
 
-    Itinerary() {}
-    Itinerary(ArrayList<City> cities) {this.cities = cities;}
-
-    ArrayList<City> getCities(){
-        return this.cities;
+    Itinerary(ArrayList<City> cities) {
+        this.cities = cities;
     }
-    City getCity(int index) {
+
+    private City getCity(int index) {
         return cities.get(index);
     }
 
-    void addCity(City city) {
-        cities.add(city);
-        // If the tours been altered we need to reset the fitness and distance
-        fitness = 0;
-        distance = 0;
-    }
-
+    // smaller is better
     @Override
     public double getFitness() {
-        if (fitness == 0) {
-            fitness = 1 / (double) getDistance();
+        if (distance != 0) {
+            return distance;
         }
-        return fitness;
+
+        for (int count = 0; count < getSize(); count++) {
+            City departure = getCity(count);
+            City arrival = getCity((count + 1) % getSize());
+            distance += departure.distanceTo(arrival);
+        }
+        return distance;
     }
 
-    void swapCities(int index1, int index2){
+    Itinerary createOffSpringWith(Itinerary parent){
+        ArrayList<City> ret = new ArrayList<>();
+
+        // Get start and end sub tour positions for parent1's tour
+        int start = RANDOM.nextInt(this.getSize());
+        int end = RANDOM.nextInt(this.getSize() - start) + start;
+
+        // add the sub itinerary from parent1
+        ret.addAll(this.cities.subList(start, end));
+
+        // add missing cities from parent2 in the same order
+        for (int i = 0; i < parent.getSize(); i++) {
+
+            if (!ret.contains(parent.getCity(i))) {
+                // Loop to find a spare position in the child's tour
+                ret.add(parent.getCity(i));
+            }
+        }
+
+        return new Itinerary(ret);
+    }
+
+    void swapCities(int index1, int index2) {
         City city1 = getCity(index1);
         City city2 = getCity(index2);
 
         // Swap them around
         cities.set(index2, city1);
         cities.set(index1, city2);
+        distance = 0;
     }
 
-    /**
-     * @return the total distance of the route
-     */
-    int getDistance() {
-        if (distance == 0) {
-            int routeDistance = 0;
-            for (int cityIndex = 0; cityIndex < getLength(); cityIndex++) {
-                // Get city we're travelling from
-                City fromCity = getCity(cityIndex);
-                // City we're travelling to
-                City destinationCity;
-                // Check we're not on our tour's last city, if we are set our
-                // tour's final destination city to our starting city
-                if (cityIndex + 1 < getLength()) {
-                    destinationCity = getCity(cityIndex + 1);
-                } else {
-                    destinationCity = getCity(0);
-                }
-                // Get the distance between the two cities
-                routeDistance += fromCity.distanceTo(destinationCity);
-            }
-            distance = routeDistance;
-        }
-        return distance;
-    }
-
-    int getLength() {
+    int getSize() {
         return cities.size();
     }
 
     @Override
     public String toString() {
         String geneString = "|";
-        for (int i = 0; i < getLength(); i++) {
+        for (int i = 0; i < getSize(); i++) {
             geneString += getCity(i) + "|";
         }
         return geneString;
@@ -122,11 +118,11 @@ public class Itinerary implements Individual {
             }
         }
 
-        for (int cityIndex = 0; cityIndex < getLength(); cityIndex++) {
+        for (int cityIndex = 0; cityIndex < getSize(); cityIndex++) {
             City fromCity = getCity(cityIndex);
             City destinationCity;
             // check if this is the last city or not, if yes, the final city is the starting city
-            if (cityIndex + 1 < getLength()) {
+            if (cityIndex + 1 < getSize()) {
                 destinationCity = getCity(cityIndex + 1);
             } else {
                 destinationCity = getCity(0);

@@ -14,7 +14,7 @@ public class TestPopulation {
         // Initialize population
         Itineraries pop = Factory.createRandomItineraries(POPULATION_SIZE);
 
-        System.out.println("Initial distance: " + pop.getFittestIndividual().getDistance());
+        System.out.println("Initial distance: " + pop.getFittestIndividual().getFitness());
         long startTime = System.currentTimeMillis();
         pop.getFittestIndividual().print("Initial route");
 
@@ -23,11 +23,11 @@ public class TestPopulation {
         pop = ga.evolve(pop);
         for (int i = 0; i < NUMBER_GENERATION; i++) {
             pop = ga.evolve(pop);
-            System.out.println("shortest distance for generation " + i + ": " + pop.getFittestIndividual().getDistance());
+            System.out.println("shortest distance for generation " + i + ": " + pop.getFittestIndividual().getFitness());
         }
 
         // Print final results
-        System.out.println("Final distance: " + pop.getFittestIndividual().getDistance());
+        System.out.println("Final distance: " + pop.getFittestIndividual().getFitness());
         pop.getFittestIndividual().print("Solution route");
         long endTime = System.currentTimeMillis();
         System.out.println("Best route found after " + NUMBER_GENERATION + " generations on " + POPULATION_SIZE + " individuals in "

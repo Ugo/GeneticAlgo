@@ -28,9 +28,9 @@ public class Itineraries implements Population<Itinerary> {
     @Override
     public Itinerary getFittestIndividual() {
 
-        Itinerary fittest = list.get(0);
+        Itinerary fittest = getIndividual(0);
         for (int iter = 1; iter < size(); iter++) {
-            if (fittest.getFitness() <= getIndividual(iter).getFitness()) {
+            if (fittest.getFitness() > getIndividual(iter).getFitness()) {
                 fittest = getIndividual(iter);
             }
         }
