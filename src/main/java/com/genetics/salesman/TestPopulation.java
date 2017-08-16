@@ -20,7 +20,7 @@ public class TestPopulation {
 		Itineraries pop = new Itineraries(POPULATION_SIZE);
 		System.out.println("Initial distance: " + pop.getFittestIndividual().getDistance());
 		long startTime = System.currentTimeMillis();
-		pop.getFittestIndividual().displayRoute("Initial route");
+		pop.getFittestIndividual().print("Initial route");
 
 		// Evolve population for all generations
 		SalesmanGA ga = new SalesmanGA();
@@ -37,7 +37,7 @@ public class TestPopulation {
 
 		// Print final results
 		System.out.println("Final distance: " + pop.getFittestIndividual().getDistance());
-		pop.getFittestIndividual().displayRoute("Solution route");
+		pop.getFittestIndividual().print("Solution route");
 		long endTime = System.currentTimeMillis();
 		System.out.println("Best route found after " + NUMBER_GENERATION + " generations on " + POPULATION_SIZE + " individuals in "
 				+ (endTime - startTime) + "ms");

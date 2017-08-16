@@ -5,11 +5,10 @@ import com.genetics.salesman.ui.DisplayComponent;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class Route implements Individual {
+public class Itinerary implements Individual {
 
-    private ArrayList<City> tour = new ArrayList<City>();
+    private ArrayList<City> cities = new ArrayList<>();
 
     // Cache
     private double fitness = 0;
@@ -17,38 +16,20 @@ public class Route implements Individual {
 
     private int SIZE_DISPLAY_BOARD = 200;
 
-    Route() {
-        for (int i = 0; i < RouteManager.numberOfCities(); i++) {
-            tour.add(null);
-        }
+    Itinerary() {}
+    Itinerary(ArrayList<City> cities) {this.cities = cities;}
+
+    City getCity(int index) {
+        return cities.get(index);
     }
 
-    public Route(ArrayList<City> tour) {
-        this.tour = tour;
-    }
-
-    @Override
-    public void generateIndividual() {
-        // Loop through all our destination cities and add them to our tour
-        for (int cityIndex = 0; cityIndex < RouteManager.numberOfCities(); cityIndex++) {
-            setCity(cityIndex, RouteManager.getCity(cityIndex));
-        }
-        // Randomly reorder the tour
-        Collections.shuffle(tour);
-    }
-
-    City getCity(int tourPosition) {
-        return (City) tour.get(tourPosition);
-    }
-
-    void setCity(int tourPosition, City city) {
-        tour.set(tourPosition, city);
+    void setCity(int index, City city) {
+        cities.set(index, city);
         // If the tours been altered we need to reset the fitness and distance
         fitness = 0;
         distance = 0;
     }
 
-    // Gets the tours fitness
     @Override
     public double getFitness() {
         if (fitness == 0) {
@@ -63,14 +44,14 @@ public class Route implements Individual {
     int getDistance() {
         if (distance == 0) {
             int routeDistance = 0;
-            for (int cityIndex = 0; cityIndex < routeSize(); cityIndex++) {
+            for (int cityIndex = 0; cityIndex < getLength(); cityIndex++) {
                 // Get city we're travelling from
                 City fromCity = getCity(cityIndex);
                 // City we're travelling to
                 City destinationCity;
                 // Check we're not on our tour's last city, if we are set our
                 // tour's final destination city to our starting city
-                if (cityIndex + 1 < routeSize()) {
+                if (cityIndex + 1 < getLength()) {
                     destinationCity = getCity(cityIndex + 1);
                 } else {
                     destinationCity = getCity(0);
@@ -83,27 +64,18 @@ public class Route implements Individual {
         return distance;
     }
 
-    /**
-     * @return the route size
-     */
-    int routeSize() {
-        return tour.size();
+    int getLength() {
+        return cities.size();
     }
 
-    /**
-     * Check if the route contains a city
-     *
-     * @param city city to check
-     * @return true if the route contains the city given in parameter
-     */
     boolean containsCity(City city) {
-        return tour.contains(city);
+        return cities.contains(city);
     }
 
     @Override
     public String toString() {
         String geneString = "|";
-        for (int i = 0; i < routeSize(); i++) {
+        for (int i = 0; i < getLength(); i++) {
             geneString += getCity(i) + "|";
         }
         return geneString;
@@ -114,8 +86,8 @@ public class Route implements Individual {
      *
      * @param title title of the route
      */
-    void displayRoute(String title) {
-        displayRoute(title, false);
+    void print(String title) {
+        print(title, false);
     }
 
     /**
@@ -124,7 +96,7 @@ public class Route implements Individual {
      * @param title     title of the route
      * @param printGrid boolean to use to display the grid or not
      */
-    void displayRoute(String title, boolean printGrid) {
+    void print(String title, boolean printGrid) {
         JFrame frame = new JFrame();
         frame.setTitle(title);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -142,11 +114,11 @@ public class Route implements Individual {
             }
         }
 
-        for (int cityIndex = 0; cityIndex < routeSize(); cityIndex++) {
+        for (int cityIndex = 0; cityIndex < getLength(); cityIndex++) {
             City fromCity = getCity(cityIndex);
             City destinationCity;
             // check if this is the last city or not, if yes, the final city is the starting city
-            if (cityIndex + 1 < routeSize()) {
+            if (cityIndex + 1 < getLength()) {
                 destinationCity = getCity(cityIndex + 1);
             } else {
                 destinationCity = getCity(0);

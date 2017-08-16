@@ -3,33 +3,31 @@ package com.genetics.salesman;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Itineraries implements Population<Route> {
+public class Itineraries implements Population<Itinerary> {
 
-    private List<Route> routes;
+    private List<Itinerary> itineraries;
 
-    Itineraries(int populationSize) {
-        routes = new ArrayList<>();
-        for (int routeIter = 0; routeIter < populationSize; routeIter++) {
-            Route newRoute = new Route();
-            newRoute.generateIndividual();
-            addIndividual(newRoute);
+    Itineraries(int count) {
+        itineraries = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            addIndividual(ItineraryFactory.createRandomItinerary());
         }
     }
 
     @Override
-    public void addIndividual(Route route) {
-        routes.add(route);
+    public void addIndividual(Itinerary itinerary) {
+        itineraries.add(itinerary);
     }
 
     @Override
-    public Route getIndividual(int index) {
-        return routes.get(index);
+    public Itinerary getIndividual(int index) {
+        return itineraries.get(index);
     }
 
     @Override
-    public Route getFittestIndividual() {
-        Route fittest = routes.get(0);
-        for (int iter = 1; iter < populationSize(); iter++) {
+    public Itinerary getFittestIndividual() {
+        Itinerary fittest = itineraries.get(0);
+        for (int iter = 1; iter < size(); iter++) {
             if (fittest.getFitness() <= getIndividual(iter).getFitness()) {
                 fittest = getIndividual(iter);
             }
@@ -38,7 +36,7 @@ public class Itineraries implements Population<Route> {
     }
 
     @Override
-    public int populationSize() {
-        return routes.size();
+    public int size() {
+        return itineraries.size();
     }
 }

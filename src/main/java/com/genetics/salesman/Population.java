@@ -8,5 +8,5 @@ public interface Population<T extends Individual> {
 
 	T getFittestIndividual();
 	
-	int populationSize();
+	int size();
 }
