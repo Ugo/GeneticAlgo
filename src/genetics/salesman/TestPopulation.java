@@ -36,8 +36,7 @@ public class TestPopulation {
 				// LinesComponent.createFrame("Generation " + i,
 				// pop.getFittestRoute());
 			}
-			// System.out.println("shortest distance for generation " + i + ":
-			// "+ pop.getFittestRoute().getDistance());
+			 System.out.println("shortest distance for generation " + i + ": "+ pop.getFittestIndividual().getDistance());
 		}
 
 		// Print final results
