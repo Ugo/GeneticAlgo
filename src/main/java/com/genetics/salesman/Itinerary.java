@@ -19,12 +19,15 @@ public class Itinerary implements Individual {
     Itinerary() {}
     Itinerary(ArrayList<City> cities) {this.cities = cities;}
 
+    ArrayList<City> getCities(){
+        return this.cities;
+    }
     City getCity(int index) {
         return cities.get(index);
     }
 
-    void setCity(int index, City city) {
-        cities.set(index, city);
+    void addCity(City city) {
+        cities.add(city);
         // If the tours been altered we need to reset the fitness and distance
         fitness = 0;
         distance = 0;
@@ -36,6 +39,15 @@ public class Itinerary implements Individual {
             fitness = 1 / (double) getDistance();
         }
         return fitness;
+    }
+
+    void swapCities(int index1, int index2){
+        City city1 = getCity(index1);
+        City city2 = getCity(index2);
+
+        // Swap them around
+        cities.set(index2, city1);
+        cities.set(index1, city2);
     }
 
     /**
@@ -66,10 +78,6 @@ public class Itinerary implements Individual {
 
     int getLength() {
         return cities.size();
-    }
-
-    boolean containsCity(City city) {
-        return cities.contains(city);
     }
 
     @Override
