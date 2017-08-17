@@ -78,29 +78,15 @@ public class Itinerary implements Individual {
 
     @Override
     public String toString() {
-        String geneString = "|";
+        StringBuilder geneString = new StringBuilder("|");
         for (int i = 0; i < getSize(); i++) {
-            geneString += getCity(i) + "|";
+            geneString.append(getCity(i)).append("|");
         }
-        return geneString;
+        return geneString.toString();
     }
 
-    /**
-     * By default, it doesn't display the grid.
-     *
-     * @param title title of the route
-     */
+    // Method to display the route in a separate window
     void print(String title) {
-        print(title, false);
-    }
-
-    /**
-     * Method to display the route in a separate window
-     *
-     * @param title     title of the route
-     * @param printGrid boolean to use to display the grid or not
-     */
-    void print(String title, boolean printGrid) {
         JFrame frame = new JFrame();
         frame.setTitle(title);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -109,28 +95,14 @@ public class Itinerary implements Individual {
         comp.setPreferredSize(new Dimension(SIZE_DISPLAY_BOARD * 2 + 50, SIZE_DISPLAY_BOARD * 2 + 50));
         frame.getContentPane().add(comp, BorderLayout.CENTER);
 
-        if (printGrid) {
-            for (int iter = 0; iter <= SIZE_DISPLAY_BOARD; iter++) {
-                if (iter % 10 == 0) {
-                    comp.addLine(iter * 2, 0, iter * 2, SIZE_DISPLAY_BOARD * 2);
-                    comp.addLine(0, iter * 2, SIZE_DISPLAY_BOARD * 2, iter * 2);
-                }
-            }
-        }
-
         for (int cityIndex = 0; cityIndex < getSize(); cityIndex++) {
             City fromCity = getCity(cityIndex);
-            City destinationCity;
-            // check if this is the last city or not, if yes, the final city is the starting city
-            if (cityIndex + 1 < getSize()) {
-                destinationCity = getCity(cityIndex + 1);
-            } else {
-                destinationCity = getCity(0);
-            }
-            // draw line accordingly
+            City destinationCity = getCity((cityIndex + 1) % getSize());
+
             comp.addLine(fromCity.getX() * 2, fromCity.getY() * 2, destinationCity.getX() * 2,
                     destinationCity.getY() * 2, Color.RED);
         }
+
         frame.pack();
         frame.setVisible(true);
     }

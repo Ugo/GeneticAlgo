@@ -4,27 +4,27 @@ public class City {
     private int x;
     private int y;
 
-    City(int x, int y){
+    City(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    int getX(){
+    int getX() {
         return this.x;
     }
-    
-    int getY(){
+
+    int getY() {
         return this.y;
     }
 
-    double distanceTo(City city){
+    double distanceTo(City city) {
         double xDistance = Math.abs(getX() - city.getX());
         double yDistance = Math.abs(getY() - city.getY());
-        return  Math.sqrt( (xDistance*xDistance) + (yDistance*yDistance) );
+        return Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
     }
-    
+
     @Override
-    public String toString(){
-        return getX()+", "+getY();
+    public String toString() {
+        return getX() + ", " + getY();
     }
 }
